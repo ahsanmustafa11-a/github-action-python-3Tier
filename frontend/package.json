@@ -1,0 +1,12 @@
+{
+  "name": "library-management-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Library Management System",
+  "scripts": {
+    "lint": "eslint js/ --fix",
+    "lint:check": "eslint js/"
+  },
+  "devDependencies": {
+    "eslint": "^8.50.0"
+  }
+}
