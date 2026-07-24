@@ -12,3 +12,9 @@ jobs:
 # ----Sast Scan -----
   Sast-Scan:
     uses: ./.github/workflows/sast.yml
+
+
+#------- Code Test -------
+  code-test:
+     uses: ./.github/workflows/code-test.yml
+  
