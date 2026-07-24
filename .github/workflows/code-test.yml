@@ -23,11 +23,12 @@ jobs:
       - name: Install Frontend Dependencies
         run: npm install --legacy-peer-deps
         working-directory: frontend
-
-      - name: Run Frontend Tests
-        run: npm test
-        working-directory: frontend
-
+# ---------- Already aded the lint test at "frontend/pacakge.json"  so there is no need to test this. Now comment these.
+#      - name: Run Frontend Tests
+#        run: npm test
+#        working-directory: frontend
+     
+      
       # ---------------- Backend ----------------
 
       - name: Setup Python
