@@ -20,7 +20,7 @@ jobs:
 
       - name: Run Bandit Scan (Backend - Python)
         # Scans backend directory for Python security issues
-        run: bandit -r . -x ./tests -v --exit-code 0
+        run: bandit -r . -x ./tests -v --exit-zero
         working-directory: backend
 
       - name: Run Semgrep SAST Scan (Backend - Python)
