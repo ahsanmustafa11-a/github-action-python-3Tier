@@ -2,10 +2,10 @@ name: DevSecOps
 
 on: 
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   # Code Lint Check
   Code-Linting:
-    uses: ./github/workflows/lint.yml
+    uses: .github/workflows/lint.yml
     
