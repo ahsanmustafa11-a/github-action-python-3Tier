@@ -20,11 +20,13 @@ jobs:
 
       - name: Run Bandit Scan (Backend - Python)
         # Scans backend directory for Python security issues
+ #   --exit-zero means: "Even if Bandit finds High severity vulnerabilities, always return success.This is just for testing purpose.   replace entire cmd with "bandit -r . -f json -o bandit-report.json"
         run: bandit -r . -x ./tests -v --exit-zero
         working-directory: backend
 
       - name: Run Semgrep SAST Scan (Backend - Python)
         uses: semgrep/semgrep-action@v1
+        # Also remove this is for testing purpose.If found error it will continue and successful pass the pipeline.
         continue-on-error: true
         with:
           config: p/python
@@ -33,5 +35,3 @@ jobs:
         uses: semgrep/semgrep-action@v1
         with:
           config: p/javascript
-        env:
-          SEMGREP_RULES: p/javascript
