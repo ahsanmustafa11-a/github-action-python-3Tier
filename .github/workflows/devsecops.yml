@@ -8,3 +8,7 @@ jobs:
   # Code Lint Check
   Code-Linting:
     uses: ./.github/workflows/lint.yml
+
+# ----Sast Scan -----
+  Sast-Scan:
+    uses: ./.github/workflows/sast.yml
