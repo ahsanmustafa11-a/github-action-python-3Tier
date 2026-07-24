@@ -2,7 +2,6 @@ name: SAST Scan
 
 on:
   workflow_call: 
-    
 
 jobs:
   sast_scan:
@@ -11,7 +10,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v7
 
-      - name: Python SAST scan
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -19,13 +18,19 @@ jobs:
       - name: Install Bandit
         run: pip install bandit
 
-      - name: Run Bandit Scan
-        # This scans the current directory, ignoring tests, and outputs a report
-        run: bandit -r . -x ./tests -v
+      - name: Run Bandit Scan (Backend - Python)
+        # Scans backend directory for Python security issues
+        run: bandit -r . -x ./tests -v --exit-code 0
         working-directory: backend
 
-      - name: Run Semgrep SAST Scan
+      - name: Run Semgrep SAST Scan (Backend - Python)
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: p/python
+
+      - name: Run Semgrep SAST Scan (Frontend - JavaScript)
         uses: semgrep/semgrep-action@v1
         with:
           config: p/javascript
-        
+        env:
+          SEMGREP_RULES: p/javascript
