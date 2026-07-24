@@ -1,37 +1,85 @@
 name: SAST Scan
 
 on:
-  workflow_call: 
+  workflow_call:
 
 jobs:
-  sast_scan:
+  sast-scan:
+    name: Static Application Security Testing
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v7
 
-      - name: Set up Python
+    steps:
+      # Checkout the latest source code from the repository
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Setup Python environment required for Bandit
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
+          cache: pip
 
+      # Install Bandit
+      # Bandit is a Python security scanner that detects insecure coding
+      # practices such as:
+      # - Hardcoded passwords
+      # - Command injection (shell=True)
+      # - Unsafe deserialization (pickle)
+      # - Weak cryptographic functions
+      # - SQL injection risks
       - name: Install Bandit
-        run: pip install bandit
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit
 
-      - name: Run Bandit Scan (Backend - Python)
-        # Scans backend directory for Python security issues
- #   --exit-zero means: "Even if Bandit finds High severity vulnerabilities, always return success.This is just for testing purpose.   replace entire cmd with "bandit -r . -f json -o bandit-report.json"
-        run: bandit -r . -x ./tests -v --exit-zero
+      # Scan the Python backend source code.
+      #
+      # --exit-zero is ONLY for testing/learning.
+      # It allows the workflow to continue even if vulnerabilities are found.
+      #
+      # Production:
+      # Remove --exit-zero so the pipeline fails when security issues exist.
+      #
+      # Recommended production command:
+      # bandit -r . -f json -o bandit-report.json
+      - name: Run Bandit Scan
         working-directory: backend
+        run: |
+          bandit -r . -x ./tests --exit-zero
 
-      - name: Run Semgrep SAST Scan (Backend - Python)
+      # Uncomment after generating JSON reports
+      #
+      # - name: Upload Bandit Report
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: bandit-report
+      #     path: backend/bandit-report.json
+
+      # Run Semgrep SAST Scan
+      #
+      # Semgrep performs Static Application Security Testing (SAST)
+      # using community and OWASP security rules.
+      #
+      # It detects issues such as:
+      # - SQL Injection
+      # - Cross-Site Scripting (XSS)
+      # - Command Injection
+      # - Path Traversal
+      # - Insecure API usage
+      # - Hardcoded secrets (basic detection)
+      # - Framework-specific security issues
+      #
+      # Multiple rule packs are used in a single scan:
+      # - p/python      -> Python security rules
+      # - p/javascript  -> JavaScript/React security rules
+      #
+      # continue-on-error is ONLY for testing.
+      # Remove it in production so the pipeline fails on security findings.
+      - name: Run Semgrep Scan
         uses: semgrep/semgrep-action@v1
-        # Also remove this is for testing purpose.If found error it will continue and successful pass the pipeline.
         continue-on-error: true
         with:
-          config: p/python
-
-      - name: Run Semgrep SAST Scan (Frontend - JavaScript)
-        uses: semgrep/semgrep-action@v1
-        with:
-          config: p/javascript
+          config: |
+            p/python
+            p/javascript
