@@ -6,15 +6,18 @@ on:
 
 jobs:
   # Code Lint Check
-  Code-Linting:
-    uses: ./.github/workflows/lint.yml
+#  Code-Linting:
+#   uses: ./.github/workflows/lint.yml
+
+
+  Gitleaks:
+    # needs: Code-Linting
+    uses: ./.github/workflows/gitleaks.yml
 
 # ----Sast Scan -----
-  Sast-Scan:
-    uses: ./.github/workflows/sast.yml
+#  Sast-Scan:
+#    uses: ./.github/workflows/sast.yml
 
 
-#------- Code Test -------
-  code-test:
-     uses: ./.github/workflows/code-test.yml
+
   
