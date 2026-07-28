@@ -17,9 +17,13 @@ jobs:
   #   needs: GitLeaks
   #   uses: ./.github/workflows/sast.yml
 
-  SCA:
-  #  needs: SAST
-    uses: ./.github/workflows/sca.yml
+  # SCA:
+  #   needs: SAST
+  #   uses: ./.github/workflows/sca.yml
+
+  Docker-Build:
+ # needs: SCA
+  uses: ./.github/workflows/docker-build.yml
 
 
 
