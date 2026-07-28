@@ -1,0 +1,82 @@
+name: Software Composition Analysis (SCA)
+
+on:
+  workflow_call:
+
+jobs:
+  dependency-scan:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout source code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      #################################################################
+      # Python Dependency Scan
+      #################################################################
+
+      # Setup Python
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      # Install pip-audit
+      #
+      # pip-audit scans Python dependencies listed in
+      # requirements.txt against the Python Advisory Database.
+      #
+      # Detects:
+      # - Known CVEs
+      # - Vulnerable package versions
+      # - Security advisories
+      - name: Install pip-audit
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-audit
+
+      # Scan Backend Dependencies
+      #
+      # Production:
+      # Remove '|| true' so the workflow fails if vulnerable
+      # packages are detected.
+      - name: Scan Python Dependencies
+        run: |
+            pip-audit -r backend/requirements.txt || true
+
+      #################################################################
+      # Node.js Dependency Scan
+      #################################################################
+
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      # Install Frontend Dependencies
+      - name: Install Frontend Packages
+        working-directory: frontend
+        run: npm install --legacy-peer-deps
+
+      # Scan Node.js Packages
+      #
+      # npm audit checks installed packages against the
+      # npm security advisory database.
+      #
+      # Detects:
+      # - Known CVEs
+      # - Vulnerable transitive dependencies
+      # - High/Critical package vulnerabilities
+      #
+      # Production:
+      # Remove '|| true'
+      - name: Run npm audit
+        working-directory: frontend
+        run: |
+          npm audit --audit-level=high || true
