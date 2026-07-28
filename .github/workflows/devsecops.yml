@@ -21,9 +21,9 @@ jobs:
   #   needs: SAST
   #   uses: ./.github/workflows/sca.yml
 
-  Docker-Build:
- # needs: SCA
-  uses: ./.github/workflows/docker-build.yml
+   Docker-Build:
+    # needs: SCA
+      uses: ./.github/workflows/docker-build.yml
 
 
 
