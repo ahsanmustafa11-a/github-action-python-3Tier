@@ -23,7 +23,7 @@ jobs:
 
    Docker-Build:
     # needs: SCA
-      uses: ./.github/workflows/docker-build.yml
+      uses: ./.github/workflows/docker-push.yml
 
 
 
