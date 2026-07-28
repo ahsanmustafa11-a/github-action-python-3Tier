@@ -1,0 +1,31 @@
+# Goal Push the images to DockerHub 
+name: Docker Push
+
+on: 
+    workflow_call:
+
+jobs:
+    frontend:
+        # Github runner
+        runs-on: ubuntu-latest
+        strategy: 
+            fail-fast: false
+            matrix:
+                folders: ['frontend','backend']
+
+        steps:
+            - name: Checkout Code
+              uses: action/checkout@v7
+
+            - name: Docker Login Setup
+              uses: docker/login-action@v4
+              with:
+                  username: ${{vars.DOCKERHUB_USERNAME}}
+                  password: ${{secrets.GITHUB_TOKEN}}
+
+            - name: Docker Build & Push Iamge
+              uses: docker/build-push-action@v7
+              with:
+                context: ./${{matrix.folders}}
+                push: true
+                tags:  ${{ vars.DOCKERHUB_USERNAME }}/github-action-python-3Tier-${{ matrix.folders}}:latest
