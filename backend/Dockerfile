@@ -13,12 +13,17 @@ ENV PYTHONUNBUFFERED=1
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends
-default-libmysqlclient-dev
-gcc
-pkg-config
-&& rm -rf /var/lib/apt/lists/*
+# Install OS-level build deps required for mysqlclient and other native extensions
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+    build-essential \
+    default-libmysqlclient-dev \
+    gcc \
+    pkg-config \
+    libssl-dev \
+    libffi-dev \
+    python3-dev \
+ && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first (better Docker cache)
 COPY requirements.txt .
