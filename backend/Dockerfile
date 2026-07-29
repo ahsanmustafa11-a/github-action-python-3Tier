@@ -4,11 +4,11 @@
 # Developed by Ahsan Mustafa
 # ==========================================
 
-FROM python:3.12-slim
+FROM python:3.10-slim
 
 # Prevent Python from buffering logs
 ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+# ENV PYTHONUNBUFFERED=1
 
 # Set working directory
 WORKDIR /app
@@ -27,6 +27,8 @@ RUN apt-get update \
 
 # Copy requirements first (better Docker cache)
 COPY requirements.txt .
+
+RUN pip install --upgrade pip
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
