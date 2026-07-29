@@ -1,0 +1,81 @@
+# Goal:
+# Secure the Docker container build process by performing the following:
+# 1. Build Docker images for each application.
+# 2. Scan the built Docker images using Trivy for security vulnerabilities.
+# 3. Push the Docker images to Docker Hub only after the security scan completes.
+#
+# Note:
+# For learning/testing, Trivy uses `exit-code: 0` so the workflow continues
+# even if vulnerabilities are found.
+#
+# Production:
+# Change `exit-code` to `1` to block vulnerable images from being pushed.
+
+name: Docker Scan
+
+on:
+  workflow_call:
+
+jobs:
+  docker-build-scan-push:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        folders:
+          - backend
+          - frontend
+
+    steps:
+      # Checkout the latest source code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Authenticate with Docker Hub
+      # Required to push Docker images.
+      - name: Docker Hub Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Build the Docker image locally.
+      # The image is built only for security scanning and is not pushed yet.
+      - name: Build Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./${{ matrix.folders }}
+          push: false
+          tags: github-action-python-3tier-${{ matrix.folders }}:latest
+
+      # Scan the Docker image using Trivy.
+      #
+      # Trivy detects:
+      # - OS package vulnerabilities
+      # - Application dependency vulnerabilities
+      # - High and Critical CVEs
+      #
+      # Testing:
+      # exit-code: 0 allows the workflow to continue even if vulnerabilities exist.
+      #
+      # Production:
+      # Change exit-code to 1 to fail the workflow when HIGH or CRITICAL
+      # vulnerabilities are detected.
+      - name: Run Trivy Image Scan
+        uses: aquasecurity/trivy-action@v0
+        with:
+          image-ref: github-action-python-3tier-${{ matrix.folders }}:latest
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
+
+      # Push the Docker image to Docker Hub.
+      # This step should execute only after the security scan passes.
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./${{ matrix.folders }}
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/github-action-python-3tier-${{ matrix.folders }}:latest
