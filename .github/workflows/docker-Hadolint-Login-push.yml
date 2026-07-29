@@ -38,3 +38,12 @@ jobs:
           context: ./${{ matrix.folders }}
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/github-action-python-3tier-${{ matrix.folders }}:latest
+
+
+      - name: Upload Report to Artifacts
+        if: always() # Ensures report uploads even if tests fail
+        uses: actions/upload-artifact@v4
+        with:
+            name: Docker-Lint-Login-Push
+            path: reports/docker-report.txt
+            retention-days: 5
