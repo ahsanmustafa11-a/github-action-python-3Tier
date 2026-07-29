@@ -1,0 +1,48 @@
+name: Trivy Image Scan
+
+on:
+  workflow_call:
+
+jobs:
+  trivy-image:
+    name: Scan Docker Images
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+          image: ['frontend','backend']
+
+    steps:
+  # Checkout source code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+# Build Docker image locally
+# The image is built only for scanning.
+# It is NOT pushed to Docker Hub.
+      - name: Build Docker Image
+        run: |
+          docker build \
+            -t github-action-python-3tier-${{ matrix.image }}:latest \
+            ./${{ matrix.image }}
+
+ # Scan the Docker image
+#
+# Trivy scans:
+# - OS package vulnerabilities
+# - Python packages
+# - Node.js packages
+# - High/Critical CVEs
+#
+# exit-code: 0
+# Keeps the pipeline green while learning.
+# Change to exit-code: 1 in production.     
+      - name: Run Trivy Scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: github-action-python-3tier-${{ matrix.image }}:latest
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: "0"
+          ignore-unfixed: true
