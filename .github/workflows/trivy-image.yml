@@ -49,7 +49,7 @@ jobs:
 
       - name: Upload Report to Artifacts
         if: always() # Ensures report uploads even if tests fail
-        uses: actions/upload-artifact@v0
+        uses: actions/upload-artifact@v4
         with:
             name: Trivy-Scan-Docker
             path: reports/trivy-report.txt
