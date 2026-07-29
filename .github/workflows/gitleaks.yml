@@ -16,3 +16,11 @@ jobs:
 
       - name: Run GitLeaks
         uses: gitleaks/gitleaks-action@v3
+
+      - name: Upload Report to Artifacts
+        if: always() # Ensures report uploads even if tests fail
+        uses: actions/upload-artifact@v4
+        with:
+            name: Secret-Scanning
+            path: reports/gitleaks-report.txt
+            retention-days: 5
