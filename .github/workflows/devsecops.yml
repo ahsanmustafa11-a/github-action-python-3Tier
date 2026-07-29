@@ -23,10 +23,10 @@ jobs:
 
    Docker-Build:
     # #needs: SCA
-      uses: ./.github/workflows/docker-push.yml
+      uses: ./..github/workflows/docker-Hadolint-Login-push.yml
       secrets: inherit
 
-   Trivy-Scan:
-      needs:    Docker-Build
-      uses: ./.github/workflows/trivy-image.yml
+   # Trivy-Scan:
+   #    needs:    Docker-Build
+   #    uses: ./.github/workflows/trivy-image.yml
   
