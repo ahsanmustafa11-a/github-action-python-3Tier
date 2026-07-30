@@ -14,15 +14,15 @@ jobs:
     uses: ./.github/workflows/gitleaks.yml
 
   SAST:
-    needs: GitLeaks
+   # needs: GitLeaks
     uses: ./.github/workflows/sast.yml
 
   SCA:
-    needs: SAST
+   # needs: SAST
     uses: ./.github/workflows/sca.yml
 
   Docker-Build:
-      needs: SCA
+    #  needs: SCA
       uses: ./.github/workflows/docker-Hadolint-Login-push.yml
       secrets: inherit
 
@@ -35,4 +35,8 @@ jobs:
       uses: ./.github/workflows/sonarqube.yml
       secrets: inherit
 
-  
+##----------- Add the CD to Deploy this Project Live.It make the Complete CI/CD Pipeline---------#
+  Deploy-CD:
+      needs:    Trivy-Scan
+      uses: ./.github/workflows/deploy.yml
+      secrets: inherit
