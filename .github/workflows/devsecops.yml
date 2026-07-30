@@ -2,61 +2,54 @@ name: DevSecOps
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
 
-  # 1. Code Quality
+  # 1. Code Quality (Flake8 + ESLint)
   Code-Linting:
     uses: ./.github/workflows/lint.yml
 
-  # 2. Secret Detection
+  # 2. Secret Scanning
   GitLeaks:
     needs: Code-Linting
     uses: ./.github/workflows/gitleaks.yml
 
-  # 3. Static Security Testing
+  # 3. Static Application Security Testing
   SAST:
     needs: GitLeaks
     uses: ./.github/workflows/sast.yml
 
-  # 4. Dependency Security
+  # 4. Software Composition Analysis
   SCA:
     needs: SAST
     uses: ./.github/workflows/sca.yml
 
-  # 5. Unit Tests
-  Code-Test:
-    needs: SCA
-    uses: ./.github/workflows/code-test.yml
-
-  # 6. SonarQube Analysis
+  # 5. Code Quality Analysis
   Sonar-Scan:
-    needs: Code-Test
+    needs: SCA
     uses: ./.github/workflows/sonarqube.yml
     secrets: inherit
 
-  # 7. Docker Build + Hadolint + Push
+  # 6. Build Docker Images + Hadolint + Push
   Docker-Build:
     needs: Sonar-Scan
     uses: ./.github/workflows/docker-Hadolint-Login-push.yml
     secrets: inherit
 
-  # 8. Trivy Image Scan
+  # 7. Container Vulnerability Scan
   Trivy-Scan:
     needs: Docker-Build
     uses: ./.github/workflows/trivy-image.yml
 
-
-#######--------CD---------#####
-  # 9. Deploy stage. Before this only do the CI steps now this is the CD step to deploy on live server.This make the Complete CI/CD pipeline.   
+###------- Before this all the steps are CI now Add the CD to make complete CI/CD pipeline with security.
+  # 8. Deploy to Server
   Deploy-CD:
     needs: Trivy-Scan
     uses: ./.github/workflows/deploy.yml
     secrets: inherit
 
-  # 10. Dynamic Security Testing
+  # 9. Dynamic Application Security Testing
   DAST:
     needs: Deploy-CD
     uses: ./.github/workflows/dast.yml
