@@ -1,387 +1,177 @@
-# 📚 Docker Compose LMS project 3 Tier  Python Flask, Mysql & Nginx
+# 🚀 GitHub Actions DevSecOps CI/CD Pipeline
 
-A production-style **Library Management System** built using a multi-container Docker architecture. The project demonstrates how to containerize a full-stack web application by integrating a responsive frontend, a Flask REST API backend, a MySQL database, and an Nginx reverse proxy using Docker Compose.
+A complete **DevSecOps CI/CD pipeline** built using **GitHub Actions** for a Python 3-Tier application.
 
-This project is designed to provide hands-on experience with Docker containerization, multi-container communication, reverse proxy configuration, and full-stack application deployment. It serves as a practical learning resource for Docker, Linux, DevOps, and backend development concepts.
-
----
-
-# 📑 Table of Contents
-
-* Project Overview
-* System Architecture
-* Project Structure
-* Technologies Used
-* Features
-* Prerequisites
-* Getting Started
-* Running with Docker Compose
-* Running Manually (Amazon Linux 2023)
-* Verification Commands
-* API Endpoints
-* Docker Architecture
-* Troubleshooting
-* Future Improvements
-* Author
+This project demonstrates how to implement modern DevSecOps practices by integrating code quality, security scanning, container security, continuous deployment, and dynamic application security testing into a reusable GitHub Actions workflow.
 
 ---
 
-# 🚀 Project Overview
+# 📌 Features
 
-The Library Management System consists of four independent Docker containers that work together to provide a complete web application.
-
-* **Frontend:** Responsive user interface built with HTML, CSS, and JavaScript.
-* **Backend:** Flask REST API responsible for business logic and database operations.
-* **Database:** MySQL database for storing books and library records.
-* **Reverse Proxy:** Nginx routes client requests to the appropriate service.
-
-Each service runs inside its own container and communicates through a dedicated Docker bridge network, demonstrating a production-style deployment architecture.
+- Reusable GitHub Actions Workflows
+- Matrix Strategy
+- Python Backend Linting (Flake8)
+- JavaScript Frontend Linting (ESLint)
+- GitLeaks Secret Detection
+- Bandit Security Scan
+- Semgrep SAST
+- npm audit Dependency Scan
+- Hadolint Dockerfile Linting
+- Docker Image Build
+- DockerHub Push
+- Trivy Container Image Scan
+- SonarQube Code Analysis
+- Self Hosted GitHub Runner
+- Continuous Deployment (CD)
+- OWASP ZAP DAST Scan
 
 ---
 
-# 🏗️ System Architecture
+# 🛠 Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| CI/CD | GitHub Actions |
+| Backend | Python, Flask |
+| Frontend | HTML, CSS, JavaScript |
+| Database | MySQL |
+| Reverse Proxy | Nginx |
+| Containers | Docker |
+| Registry | Docker Hub |
+| Code Quality | Flake8, ESLint |
+| Secret Scanning | GitLeaks |
+| SAST | Bandit, Semgrep |
+| SCA | npm audit |
+| Docker Security | Hadolint, Trivy |
+| Code Analysis | SonarQube Community |
+| DAST | OWASP ZAP |
+| Deployment | AWS EC2 + Self Hosted Runner |
+
+---
+
+# 📂 Repository Structure
 
 ```text
-                   User Browser
-                        │
-                        ▼
-                Nginx Reverse Proxy
-                        │
-          ┌─────────────┴─────────────┐
-          │                           │
-          ▼                           ▼
-   Frontend Container          Backend Container
-      (Nginx)                     (Flask API)
-                                      │
-                                      ▼
-                             MySQL Database
+.github/
+└── workflows/
+    ├── devsecops.yml
+    ├── lint.yml
+    ├── frontend-lint.yml
+    ├── gitleaks.yml
+    ├── sast.yml
+    ├── sca.yml
+    ├── docker-Hadolint-Login-push.yml
+    ├── docker-build-scan-push.yml
+    ├── trivy-image.yml
+    ├── sonarqube.yml
+    ├── deploy.yml
+    └── dast.yml
+
+backend/
+frontend/
+database/
+nginx/
 ```
 
 ---
 
-# 📁 Project Structure
+# 🔄 DevSecOps Pipeline
 
-```text
-library-management-system/
-│
-├── .env
-├── docker-compose.yml
-├── README.md
-│
-├── frontend/
-│   ├── Dockerfile
-│   ├── README.md
-│   ├── nginx.conf
-│   ├── index.html
-│   ├── css/
-│   │   └── style.css
-│   ├── js/
-│   │   └── app.js
-│   └── images/
-│
-├── backend/
-│   ├── Dockerfile
-│   ├── README.md
-│   ├── app.py
-│   └── requirements.txt
-│
-├── database/
-│   └── init.sql
-│
-└── nginx/
-    ├── Dockerfile
-    └── default.conf
+```
+Developer
+     │
+     ▼
+GitHub Push
+     │
+     ▼
+Code Linting
+     │
+     ▼
+GitLeaks
+     │
+     ▼
+SAST
+     │
+     ▼
+SCA
+     │
+     ▼
+Dockerfile Lint
+     │
+     ▼
+Docker Build
+     │
+     ▼
+Trivy Scan
+     │
+     ▼
+SonarQube Analysis
+     │
+     ▼
+DockerHub
+     │
+     ▼
+Deploy to AWS EC2
+     │
+     ▼
+OWASP ZAP DAST
 ```
 
 ---
 
-# 🛠️ Technologies Used
+# 📖 Documentation
 
-| Technology     | Purpose                           |
-| -------------- | --------------------------------- |
-| Docker         | Containerization                  |
-| Docker Compose | Multi-container orchestration     |
-| Python         | Backend programming language      |
-| Flask          | REST API framework                |
-| Gunicorn       | Production WSGI server            |
-| MySQL          | Relational database               |
-| HTML5          | Frontend structure                |
-| CSS3           | User interface styling            |
-| JavaScript     | Client-side functionality         |
-| Nginx          | Static web server & reverse proxy |
-| Git            | Version control                   |
-| GitHub         | Source code hosting               |
+Additional documentation is available in this repository.
+
+| File | Description |
+|------|-------------|
+| SETUP.md | Installation and configuration guide |
+| ARCHITECTURE.md | Pipeline architecture |
+| SECURITY.md | Security tools overview |
+| SONARQUBE.md | SonarQube setup |
+| DEPLOYMENT.md | Deployment using Self Hosted Runner |
+| TROUBLESHOOTING.md | Common issues and fixes |
 
 ---
 
-# ✨ Features
+# 🔐 Security Tools
 
-* Multi-container Docker architecture
-* Responsive dashboard interface
-* Book management (Create, Read, Update, Delete)
-* Real-time search functionality
-* RESTful API integration
-* MySQL database initialization with sample data
-* Nginx reverse proxy configuration
-* Docker networking between containers
-* Persistent database storage using Docker volumes
-* Health check support
-* Production-ready Dockerfiles
-
----
-
-# 📋 Prerequisites
-
-Ensure the following software is installed before running the project:
-
-* Docker Engine
-* Docker Compose (or `docker-compose`)
-* Git
-
-Verify the installation:
-
-```bash
-docker --version
-docker-compose --version
-git --version
-```
+- Flake8
+- ESLint
+- GitLeaks
+- Bandit
+- Semgrep
+- npm audit
+- Hadolint
+- Trivy
+- SonarQube
+- OWASP ZAP
 
 ---
 
-# 🚀 Getting Started
+# 📸 Screenshots
 
-Clone the repository:
+Add screenshots for:
 
-```bash
-git clone https://github.com/<your-username>/library-management-system.git
-```
-
-Navigate to the project directory:
-
-```bash
-cd library-management-system
-```
+- GitHub Actions Pipeline
+- SonarQube Dashboard
+- DockerHub Images
+- Trivy Scan Report
+- OWASP ZAP Report
+- AWS Deployment
 
 ---
 
-# 🐳 Running with Docker Compose
+# 📚 Official Documentation
 
-Build all images:
-
-```bash
-docker compose build --no-cache
-```
-
-If your system uses the standalone Compose binary:
-
-```bash
-docker-compose build --no-cache
-```
-
-Start all containers:
-
-```bash
-docker compose up -d
-```
-
-or
-
-```bash
-docker-compose up -d
-```
-
-Stop all containers:
-
-```bash
-docker compose down
-```
+- GitHub Actions: https://docs.github.com/actions
+- Docker: https://docs.docker.com
+- SonarQube: https://docs.sonarsource.com/sonarqube-server
+- Trivy: https://trivy.dev/latest/docs
+- OWASP ZAP: https://www.zaproxy.org/docs
 
 ---
 
-# ☁️ Running Manually (Amazon Linux 2023)
+# 📄 License
 
-Some Amazon Linux 2023 systems may encounter Docker Compose Buildx compatibility issues.
-
-If `docker compose build` or `docker-compose build` fails, build the images manually.
-
-Build Backend
-
-```bash
-docker build -t library-management-system-backend ./backend
-```
-
-Build Frontend
-
-```bash
-docker build -t library-management-system-frontend ./frontend
-```
-
-Build Reverse Proxy
-
-```bash
-docker build -t library-management-system-nginx ./nginx
-```
-
-Start the containers manually using Docker or use the existing Compose file after building the images successfully.
-
----
-
-# ✅ Verification Commands
-
-Verify Docker images:
-
-```bash
-docker images
-```
-
-Verify running containers:
-
-```bash
-docker ps
-```
-
-Verify Docker network:
-
-```bash
-docker network ls
-```
-
-Inspect the application network:
-
-```bash
-docker network inspect lms-network
-```
-
-Verify Docker volumes:
-
-```bash
-docker volume ls
-```
-
-Check container logs:
-
-```bash
-docker logs <container_name>
-```
-
-Verify backend API:
-
-```bash
-curl http://localhost:5000/books
-```
-
-Verify application:
-
-```text
-http://localhost
-```
-
----
-
-# 🔌 API Endpoints
-
-| Method | Endpoint      | Description                   |
-| ------ | ------------- | ----------------------------- |
-| GET    | `/books`      | Retrieve all books            |
-| POST   | `/books`      | Add a new book                |
-| PUT    | `/books/{id}` | Update an existing book       |
-| DELETE | `/books/{id}` | Delete a book                 |
-| GET    | `/stats`      | Retrieve dashboard statistics |
-| GET    | `/health`     | Application health check      |
-
----
-
-# 🐳 Docker Architecture
-
-The application is divided into four independent services.
-
-| Service       | Description                                      |
-| ------------- | ------------------------------------------------ |
-| Frontend      | Serves the user interface using Nginx            |
-| Backend       | Flask REST API handling business logic           |
-| MySQL         | Stores application data                          |
-| Reverse Proxy | Routes incoming requests to frontend and backend |
-
-Communication between services is handled through a Docker bridge network, while MySQL data is stored in a persistent Docker volume.
-
----
-
-# ⚠️ Troubleshooting
-
-### Docker Compose not found
-
-Use:
-
-```bash
-docker-compose
-```
-
-instead of
-
-```bash
-docker compose
-```
-
-if the Compose plugin is unavailable.
-
----
-
-### Buildx version error
-
-If you encounter a Buildx compatibility issue on Amazon Linux 2023, build the Docker images manually before starting the application.
-
----
-
-### Port already in use
-
-Identify the process using the port:
-
-```bash
-ss -tulpn
-```
-
-Stop the conflicting service or update the port mapping.
-
----
-
-### Database connection issue
-
-Check the MySQL container status:
-
-```bash
-docker ps
-```
-
-Review the MySQL logs:
-
-```bash
-docker logs lms-mysql
-```
-
----
-
-# 🚀 Future Improvements
-
-* User Authentication
-* JWT Authorization
-* Role-Based Access Control (RBAC)
-* Student Management Module
-* Book Issue & Return Workflow
-* Book Cover Image Upload
-* Pagination & Filtering
-* Docker Secrets
-* CI/CD with GitHub Actions
-* Monitoring with Prometheus & Grafana
-* Kubernetes Deployment
-
----
-
-# 👨‍💻 Author
-
-**Ahsan Mustafa**
-
-**Project:** Library Management System (LMS)
-
-**Architecture:** Docker • Flask • MySQL • Nginx
-
-This project was developed for learning Docker containerization, multi-container application deployment, and full-stack web application architecture.
+This project is licensed under the MIT License.
