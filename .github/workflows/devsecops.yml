@@ -40,3 +40,10 @@ jobs:
       needs:    Trivy-Scan
       uses: ./.github/workflows/deploy.yml
       secrets: inherit
+
+##-------------DAST OWASP ZAP  Scan-------------##
+  dast-scan:
+      needs: [Deploy-CD]
+      uses: ./.github/workflows/dast.yml
+      secrets: inherit
+
