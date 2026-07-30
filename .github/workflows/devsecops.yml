@@ -6,33 +6,33 @@ on:
 
 jobs:
 
-  # Code-Linting:
-  #   uses: ./.github/workflows/lint.yml
+  Code-Linting:
+    uses: ./.github/workflows/lint.yml
 
-  # GitLeaks:
-  #   needs: Code-Linting
-  #   uses: ./.github/workflows/gitleaks.yml
+  GitLeaks:
+    needs: Code-Linting
+    uses: ./.github/workflows/gitleaks.yml
 
-  # SAST:
-  #   needs: GitLeaks
-  #   uses: ./.github/workflows/sast.yml
+  SAST:
+    needs: GitLeaks
+    uses: ./.github/workflows/sast.yml
 
-  # SCA:
-  #   needs: SAST
-  #   uses: ./.github/workflows/sca.yml
+  SCA:
+    needs: SAST
+    uses: ./.github/workflows/sca.yml
 
-  # Docker-Build:
-  #     needs: SCA
-  #     uses: ./.github/workflows/docker-Hadolint-Login-push.yml
-  #     secrets: inherit
+  Docker-Build:
+      needs: SCA
+      uses: ./.github/workflows/docker-Hadolint-Login-push.yml
+      secrets: inherit
 
   Trivy-Scan:
-      # needs:    Docker-Build
+      needs:    Docker-Build
       uses: ./.github/workflows/trivy-image.yml
 
-  # Sonar-Scan:
-  #     needs:    Trivy-Scan
-  #     uses: ./.github/workflows/sonarqube.yml
-  #     secrets: inherit
+  Sonar-Scan:
+      needs:    Trivy-Scan
+      uses: ./.github/workflows/sonarqube.yml
+      secrets: inherit
 
   
